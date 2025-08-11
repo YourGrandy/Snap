@@ -12,6 +12,7 @@ import { LikedPosts } from "@/_root/pages";
 import { useUserContext } from "@/context/AuthContext";
 import { useGetUserById } from "@/lib/react-query/queries";
 import { GridPostList, Loader } from "@/components/shared";
+import { log } from "console";
 
 interface StabBlockProps {
   value: string | number;
@@ -19,7 +20,7 @@ interface StabBlockProps {
 }
 
 const StatBlock = ({ value, label }: StabBlockProps) => (
-  <div className="flex-center gap-2">
+  <div className="gap-2 flex-center">
     <p className="small-semibold lg:body-bold text-primary-500">{value}</p>
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
   </div>
@@ -34,39 +35,53 @@ const Profile = () => {
 
   if (!currentUser)
     return (
-      <div className="flex-center w-full h-full">
+      <div className="w-full h-full flex-center">
         <Loader />
       </div>
     );
 
+  const buildFileDownloadUrl = (fileId) => {
+    if (!fileId) return "";
+    return `https://fra.cloud.appwrite.io/v1/storage/buckets/689628660035b0ddbe53/files/${fileId}/download?project=6896256c0023d71c5cff`;
+  };
+
   return (
     <div className="profile-container">
       <div className="profile-inner_container">
-        <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
-          <img
+        <div className="flex flex-col flex-1 xl:flex-row max-xl:items-center gap-7">
+          {/* <img
             src={
               currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"
             }
             alt="profile"
-            className="w-28 h-28 lg:h-36 lg:w-36 rounded-full"
+            className="rounded-full w-28 h-28 lg:h-36 lg:w-36"
+          /> */}
+          <img
+            src={
+              currentUser.imageId
+                ? buildFileDownloadUrl(currentUser.imageId)
+                : "/assets/icons/profile-placeholder.svg"
+            }
+            alt="profile"
+            className="object-cover rounded-full w-28 h-28 lg:h-36 lg:w-36"
           />
-          <div className="flex flex-col flex-1 justify-between md:mt-2">
+          <div className="flex flex-col justify-between flex-1 md:mt-2">
             <div className="flex flex-col w-full">
-              <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
+              <h1 className="w-full text-center xl:text-left h3-bold md:h1-semibold">
                 {currentUser.name}
               </h1>
-              <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
+              <p className="text-center small-regular md:body-medium text-light-3 xl:text-left">
                 @{currentUser.username}
               </p>
             </div>
 
-            <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
+            <div className="z-20 flex flex-wrap items-center justify-center gap-8 mt-10 xl:justify-start">
               <StatBlock value={currentUser.posts.length} label="Posts" />
               <StatBlock value={20} label="Followers" />
               <StatBlock value={20} label="Following" />
             </div>
 
-            <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
+            <p className="max-w-screen-sm text-center small-medium md:base-medium xl:text-left mt-7">
               {currentUser.bio}
             </p>
           </div>
@@ -90,7 +105,7 @@ const Profile = () => {
               </Link>
             </div>
             <div className={`${user.id === id && "hidden"}`}>
-              <Button type="button" className="shad-button_primary px-8">
+              <Button type="button" className="px-8 shad-button_primary">
                 Follow
               </Button>
             </div>
@@ -99,7 +114,7 @@ const Profile = () => {
       </div>
 
       {currentUser.$id === user.id && (
-        <div className="flex max-w-5xl w-full">
+        <div className="flex w-full max-w-5xl">
           <Link
             to={`/profile/${id}`}
             className={`profile-tab rounded-l-lg ${
