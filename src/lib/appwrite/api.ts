@@ -59,8 +59,22 @@ export async function saveUserToDB(user: {
 }
 
 // ============================== SIGN IN
+// export async function signInAccount(user: { email: string; password: string }) {
+//   try {
+//     const session = await account.createEmailSession(user.email, user.password);
+
+//     return session;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
 export async function signInAccount(user: { email: string; password: string }) {
   try {
+    // Delete existing session if there is one
+    await account.deleteSession('current').catch(() => null); // ignore error if no active session
+
+    // Create a new session
     const session = await account.createEmailSession(user.email, user.password);
 
     return session;
@@ -68,6 +82,7 @@ export async function signInAccount(user: { email: string; password: string }) {
     console.log(error);
   }
 }
+
 
 // ============================== GET ACCOUNT
 export async function getAccount() {
