@@ -39,8 +39,7 @@ const Profile = () => {
         <Loader />
       </div>
     );
-
-  const buildFileDownloadUrl = (fileId) => {
+  const buildFileDownloadUrl = (fileId: { fieldId: string }) => {
     if (!fileId) return "";
     return `https://fra.cloud.appwrite.io/v1/storage/buckets/689628660035b0ddbe53/files/${fileId}/download?project=6896256c0023d71c5cff`;
   };
