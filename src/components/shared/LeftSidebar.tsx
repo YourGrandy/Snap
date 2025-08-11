@@ -24,10 +24,15 @@ const LeftSidebar = () => {
     navigate("/sign-in");
   };
 
+  const buildFileDownloadUrl = (fileId: string) => {
+    if (!fileId) return "";
+    return `https://fra.cloud.appwrite.io/v1/storage/buckets/689628660035b0ddbe53/files/${fileId}/download?project=6896256c0023d71c5cff`;
+  };
+
   return (
     <nav className="leftsidebar">
       <div className="flex flex-col gap-11">
-        <Link to="/" className="flex gap-3 items-center">
+        <Link to="/" className="flex items-center gap-3">
           <img
             src="/assets/images/logo.svg"
             alt="logo"
@@ -41,11 +46,21 @@ const LeftSidebar = () => {
             <Loader />
           </div>
         ) : (
-          <Link to={`/profile/${user.id}`} className="flex gap-3 items-center">
-            <img
+          <Link to={`/profile/${user.id}`} className="flex items-center gap-3">
+            {/* <img
               src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
               alt="profile"
-              className="h-14 w-14 rounded-full"
+              className="rounded-full h-14 w-14"
+            /> */}
+            <img
+              // src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+              src={
+                user.imageId
+                  ? buildFileDownloadUrl(user.imageId)
+                  : "/assets/icons/profile-placeholder.svg"
+              }
+              alt="creator"
+              className="object-cover rounded-full w-14 h-14"
             />
             <div className="flex flex-col">
               <p className="body-bold">{user.name}</p>
@@ -66,7 +81,7 @@ const LeftSidebar = () => {
                 }`}>
                 <NavLink
                   to={link.route}
-                  className="flex gap-4 items-center p-4">
+                  className="flex items-center gap-4 p-4">
                   <img
                     src={link.imgURL}
                     alt={link.label}
