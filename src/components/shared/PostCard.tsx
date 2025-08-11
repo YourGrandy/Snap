@@ -14,6 +14,11 @@ const PostCard = ({ post }: PostCardProps) => {
 
   if (!post.creator) return;
 
+  const buildFileDownloadUrl = (fileId: string) => {
+    if (!fileId) return "";
+    return `https://fra.cloud.appwrite.io/v1/storage/buckets/689628660035b0ddbe53/files/${fileId}/download?project=6896256c0023d71c5cff`;
+  };
+
   return (
     <div className="post-card">
       <div className="flex-between">
@@ -21,11 +26,16 @@ const PostCard = ({ post }: PostCardProps) => {
           <Link to={`/profile/${post.creator.$id}`}>
             <img
               src={
-                post.creator?.imageUrl ||
-                "/assets/icons/profile-placeholder.svg"
+                user.imageId
+                  ? buildFileDownloadUrl(user.imageId)
+                  : user.imageUrl
               }
+              // src={
+              //   post.creator?.imageUrl ||
+              //   "/assets/icons/profile-placeholder.svg"
+              // }
               alt="creator"
-              className="w-12 lg:h-12 rounded-full"
+              className="object-cover w-12 rounded-full lg:h-12"
             />
           </Link>
 
@@ -33,7 +43,7 @@ const PostCard = ({ post }: PostCardProps) => {
             <p className="base-medium lg:body-bold text-light-1">
               {post.creator.name}
             </p>
-            <div className="flex-center gap-2 text-light-3">
+            <div className="gap-2 flex-center text-light-3">
               <p className="subtle-semibold lg:small-regular ">
                 {multiFormatDateString(post.$createdAt)}
               </p>
@@ -58,7 +68,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       <Link to={`/posts/${post.$id}`}>
-        <div className="small-medium lg:base-medium py-5">
+        <div className="py-5 small-medium lg:base-medium">
           <p>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string, index: string) => (
@@ -70,7 +80,12 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
 
         <img
-          src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
+          src={
+            user.imageId
+              ? buildFileDownloadUrl(post.imageId)
+              : "/assets/icons/profile-placeholder.svg"
+          }
+          // src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
           alt="post image"
           className="post-card_img"
         />

@@ -14,10 +14,15 @@ const Topbar = () => {
     if (isSuccess) navigate(0);
   }, [isSuccess]);
 
+  const buildFileDownloadUrl = (fileId: string) => {
+    if (!fileId) return "";
+    return `https://fra.cloud.appwrite.io/v1/storage/buckets/689628660035b0ddbe53/files/${fileId}/download?project=6896256c0023d71c5cff`;
+  };
+
   return (
     <section className="topbar">
-      <div className="flex-between py-4 px-5">
-        <Link to="/" className="flex gap-3 items-center">
+      <div className="px-5 py-4 flex-between">
+        <Link to="/" className="flex items-center gap-3">
           <img
             src="/assets/images/logo.svg"
             alt="logo"
@@ -33,11 +38,16 @@ const Topbar = () => {
             onClick={() => signOut()}>
             <img src="/assets/icons/logout.svg" alt="logout" />
           </Button>
-          <Link to={`/profile/${user.id}`} className="flex-center gap-3">
+          <Link to={`/profile/${user.id}`} className="gap-3 flex-center">
             <img
-              src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+              src={
+                user.imageId
+                  ? buildFileDownloadUrl(user.imageId)
+                  : user.imageUrl
+              }
+              // src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
               alt="profile"
-              className="h-8 w-8 rounded-full"
+              className="object-cover w-8 h-8 rounded-full"
             />
           </Link>
         </div>
